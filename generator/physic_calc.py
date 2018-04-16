@@ -1,5 +1,3 @@
-import numpy.random as np
-
 u = {'b': 1.,
      'h': 1e2,
      'd': 1e2,
@@ -31,11 +29,11 @@ def time(t):
     return "%d:%d:%d" % (h, m, s)
 
 
-# returns used gas GZ-50 in [m3]
+# returns used gas GZ-50 in [l]
 # dt [C | K] - temperature change
 # v [hl]- volume of heated water
 def calc_gas(v, dt):
-    return dt*G*v
+    return dt*G*v*u['k']
 
 
 # returns time of water heating in [h]
@@ -59,12 +57,12 @@ def calc_energy(v, dt, q=1., cp=4180, n=1.):
     return cp * v * u['h'] * q * dt / n / u['kh']
 
 
-# returns energy needed for water heating in [kWh]
+# returns energy needed for water heating in [Wh]
 # n - heater efficiency
 # p [kW] - power of heater
 # t [h] - time
 def calc_energy(p, t, n=1.):
-    return p * u['k'] * n * t * t_u['h'] / u['kh']
+    return p * u['k'] * n * t * t_u['h'] / t_u['h']
 
 
 # returns temperature change in [C]
@@ -101,5 +99,3 @@ def test():
     print "zuzyta energia: %.3lf kWh (%.3lf MJ| %.3lf J)" % (energy, convert_unit('kh', 'M', energy), convert_unit('kh', 'b', energy))
     print "zmiana temperatury: %.3lf C" % (temp)
 
-
-# test()
