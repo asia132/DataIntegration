@@ -1,3 +1,5 @@
+import random
+
 u = {'b': 1.,
      'h': 1e2,
      'd': 1e2,
@@ -20,20 +22,15 @@ def e_per_s():
     return E / t_u['h']
 
 
-def time(t):
-    s = t % 60
-    t = (t - s) / 60
-    m = t % 60
-    t = (t - m) / 60
-    h = t % 60
-    return "%d:%d:%d" % (h, m, s)
-
-
-# returns used gas GZ-50 in [l]
-# dt [C | K] - temperature change
-# v [hl]- volume of heated water
-def calc_gas(v, dt):
-    return dt*G*v*u['k']
+# returns used gas in [m3]
+# cp [J/(kg*C)]- density of liquid (4200 - water)
+# q [kg/m3] - density of liquid
+# v [hl] - volume of liquid
+# dt [C | K] - change of temperature
+# n - heater efficiency
+# w [MJ / m3]- heating value of gas
+def calc_gas(cp, q, v, dt, n, w):
+    return cp * q * u['h'] * v * dt / (n * w) / 1e5
 
 
 # returns time of water heating in [h]
@@ -60,20 +57,20 @@ def calc_energy(v, dt, q=1., cp=4180, n=1.):
 # returns energy needed for water heating in [Wh]
 # n - heater efficiency
 # p [kW] - power of heater
-# t [h] - time
-def calc_energy(p, t, n=1.):
-    return p * u['k'] * n * t * t_u['h'] / t_u['h']
+# r [h] - time
+def calc_energy(p, r, n=1.):
+    return p * u['k'] * n * r * t_u['h'] / u['kh']
 
 
 # returns temperature change in [C]
 # n - heater efficiency
 # cp [J/(kg*C)- density of liquid (4200 - water)
 # v [hl] - volume of liquid
-# t [h] - time of heating
+# r [h] - time of heating
 # p [kW] - power of heater
 # q [kg/m3] - density of liquid
-def calc_temperature_change(t, v, p, q=1., cp=4180, n=1.):
-    return t * t_u['h'] * p * u['k'] * n / cp / (v * u['h'] * q)
+def calc_temperature_change(r, v, p, q=1., cp=4180, n=1.):
+    return r * t_u['h'] * p * u['k'] * n / cp / (v * u['h'] * q)
 
 
 def convert_unit(from_u, to_u, value):

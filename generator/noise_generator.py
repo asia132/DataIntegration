@@ -8,10 +8,11 @@ __b = 6.5
 __df = 2.5
 
 
+# small noise
 def beta_noise(val):
     return np.beta(__a, __b) * np.choice([-1, 1]) * 0.1 + val
 
-
+# big noise
 def chi_noise(val):
     return np.chisquare(__df) * np.choice([-1, 1]) + val
 
@@ -33,10 +34,9 @@ def test_noise():
         print "%d\t%.3lf" % (i, chi_noise(i))
 
 
-def apply_noise_to_input(v, p, q, cp, n):
-    return chi_noise(v), chi_noise(p), beta_noise(q), chi_noise(cp), beta_noise(n)
+def apply_noise_to_input(v, p, q, cp, n, w):
+    return chi_noise(v), chi_noise(p), beta_noise(q), chi_noise(cp), beta_noise(n), chi_noise(w)
 
 
 def apply_noise_to_output(dt, energy, gas):
-    return beta_noise(dt), beta_noise(energy), beta_noise(gas)
-
+    return beta_noise(dt), chi_noise(energy), beta_noise(gas)
